@@ -1,5 +1,9 @@
 <script>
-  let files = null;
+  import * as rgssad from "rgssad-wasm";
+  import * as zip from "@zip.js/zip.js";
+
+  let rootNode = null;
+  let fileName = null;
 
   function handleArchiveInputDrop(event) {
     const items = event.dataTransfer.items;
@@ -22,38 +26,145 @@
 
     const file = item.getAsFile();
 
-    try {
-        loadArchiveFromFile(file);
-    } catch(error) {
-        alert(error);
-        return;
-    }
+    loadArchiveFromFile(file).catch(alert);
   }
 
   function handleArchiveInputChange(event) {
     const input = event.target;
-    if(input.files.length !== 1) {
-        alert("Expected only one file");
-        return;
+    if (input.files.length !== 1) {
+      alert("Expected only one file");
+      return;
     }
-    
+
     const file = input.files[0];
-    
-    try {
-        loadArchiveFromFile(file);
-    } catch(error) {
-        alert(error);
-        return;
+
+    loadArchiveFromFile(file).catch(alert);
+  }
+
+  class FileNode {
+    constructor({ name, isFile, data = null }) {
+      if (name === undefined || name === null) {
+        throw new Error("Missing `name`");
+      }
+
+      if (isFile === undefined || isFile === null) {
+        throw new Error("Missing `isFile`");
+      }
+
+      this.name = name;
+      this.isFile = isFile;
+      this.children = null;
+      this.data = null;
+
+      if (isFile) {
+        if (data === undefined || data === null) {
+          throw new Error("Missing `data`");
+        }
+        this.data = data;
+      } else {
+        this.children = new Map();
+      }
+    }
+
+    addChild(path, fileNode) {
+      if (this.isFile) {
+        throw new Error("cannot add child to file");
+      }
+
+      const pathSegments = path.split("\\", 2);
+
+      if (pathSegments.length === 1) {
+        const name = pathSegments[0];
+        fileNode.name = name;
+
+        this.children.set(name, fileNode);
+      } else {
+        const name = pathSegments[0];
+        path = pathSegments[1];
+
+        if (!this.children.has(name)) {
+          const fileNode = new FileNode({
+            name,
+            isFile: false,
+          });
+          this.children.set(name, fileNode);
+        }
+
+        this.children.get(name).addChild(path, fileNode);
+      }
     }
   }
-  
-  function loadArchiveFromFile(file) {
-    console.log(file);
+
+  async function loadArchiveFromFile(file) {
+    const arrayBuffer = await file.arrayBuffer();
+    const reader = new rgssad.Reader(arrayBuffer);
+
+    const fileTree = new FileNode({
+      name: "",
+      isFile: false,
+    });
+    for (
+      let entry = reader.readEntry();
+      entry != null;
+      entry = reader.readEntry()
+    ) {
+      const fileName = entry.fileName;
+
+      const fileNode = new FileNode({
+        name: "",
+        isFile: true,
+        data: entry.data,
+      });
+
+      fileTree.addChild(fileName, fileNode);
+    }
+
+    rootNode = fileTree;
+    fileName = file.name;
+  }
+
+  async function downloadZip() {
+    if (rootNode === null) {
+      throw Error("archive has not been loaded");
+    }
+
+    const zipFileWriter = new zip.BlobWriter();
+    const zipWriter = new zip.ZipWriter(zipFileWriter);
+
+    const stack = [];
+    stack.push(["", rootNode]);
+    while (stack.length !== 0) {
+      const [path, node] = stack.pop();
+      if (node.isFile) {
+        const reader = new zip.Uint8ArrayReader(node.data);
+        await zipWriter.add(path, reader);
+      } else {
+        for (const child of node.children.values()) {
+          let newPath = path;
+          if (newPath.length !== 0) {
+            newPath += "\\";
+          }
+          newPath += child.name;
+          stack.push([newPath, child]);
+        }
+      }
+    }
+    const zipFileBlob = await zipWriter.close();
+
+    const a = document.createElement("a");
+    a.href = window.URL.createObjectURL(zipFileBlob);
+    a.download = fileName + ".zip";
+    a.click();
   }
 </script>
 
-{#if files !== null}
-  {files}
+{#if rootNode !== null}
+  <div>
+    <div>
+      <button on:click={downloadZip}>Download Zip</button>
+    </div>
+    {rootNode}
+  </div>
 {:else}
   <div class="archive-input-container">
     <label
