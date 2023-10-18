@@ -1,17 +1,19 @@
-name: RustDoc
+name: Website
 on:
   push:
     branches:
       - master
   
 jobs:
-  rustdoc:
-    name: RustDoc
+  website:
+    name: Website
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout
       uses: actions/checkout@v4
+      with:
+        lfs: true
       
     - name: Cache
       uses: actions/cache@v3
