@@ -1,5 +1,5 @@
 name: CI
-'on':
+"on":
   push:
     branches:
       - master
@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        
+
       - name: Cache
         uses: actions/cache@v3
         with:
@@ -21,13 +21,13 @@ jobs:
             ~/.npm
             node_modules
           key: ${{ runner.os }}-lint-npm-${{ hashFiles('**/package-lock.json') }}
-          
+
       - name: Install Deps
         run: npm i
-        
+
       - name: Fmt
         run: npm run check-fmt
-        
+
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -36,7 +36,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           lfs: true
-        
+
       - name: Cache
         uses: actions/cache@v3
         with:
@@ -44,9 +44,9 @@ jobs:
             ~/.npm
             node_modules
           key: ${{ runner.os }}-build-npm-${{ hashFiles('**/package-lock.json') }}
-          
+
       - name: Install Deps
         run: npm i
-        
+
       - name: Build
         run: npm run build

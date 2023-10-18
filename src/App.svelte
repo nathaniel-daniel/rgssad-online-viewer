@@ -71,17 +71,19 @@
         throw new Error("cannot add child to file");
       }
 
-      const pathSegments = path.split("\\", 2);
+      const [name, ...pathTail] = path.split("\\");
 
-      if (pathSegments.length === 1) {
-        const name = pathSegments[0];
+      if (pathTail.length === 0) {
         fileNode.name = name;
+
+        if (name === "Animations") console.log(fileNode);
+
+        if (this.children.has(name)) {
+          throw new Error("duplicate file node");
+        }
 
         this.children.set(name, fileNode);
       } else {
-        const name = pathSegments[0];
-        path = pathSegments[1];
-
         if (!this.children.has(name)) {
           const fileNode = new FileNode({
             name,
@@ -90,7 +92,7 @@
           this.children.set(name, fileNode);
         }
 
-        this.children.get(name).addChild(path, fileNode);
+        this.children.get(name).addChild(pathTail.join("\\"), fileNode);
       }
     }
   }
@@ -121,6 +123,8 @@
 
     rootNode = fileTree;
     fileName = file.name;
+
+    console.log(rootNode);
   }
 
   async function downloadZip() {
