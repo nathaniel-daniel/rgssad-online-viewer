@@ -5,17 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>RGSSAD Online Viewer</title>
     <style>
+      /* https://www.color-hex.com/color-palette/1718 */
       :root {
         --color-1: #000000;
+        --color-2: #303030;
       }
 
       html {
         background-color: var(--color-1);
         width: 100%;
         height: 100%;
+        margin: 0;
+        padding: 0;
       }
 
       body {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      #app {
+        flex-grow: 1;
+        display: flex;
+        width: 100%;
+        height: 100%;
       }
     </style>
   </head>
