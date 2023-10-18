@@ -1,0 +1,19 @@
+{
+  "name": "rgssad-online-viewer",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "fmt": "prettier . --write"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^2.4.3",
+    "prettier": "3.0.3",
+    "svelte": "^4.1.2",
+    "vite": "^4.4.11"
+  }
+}
