@@ -21,6 +21,9 @@ jobs:
             ~/.npm
             node_modules
           key: ${{ runner.os }}-lint-npm-${{ hashFiles('**/package-lock.json') }}
+          
+      - name: Install Deps
+        run: npm i
         
       - name: Fmt
         run: npm run check-fmt
