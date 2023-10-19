@@ -79,19 +79,13 @@
     const zipFileWriter = new zip.BlobWriter();
     const zipWriter = new zip.ZipWriter(zipFileWriter);
 
-    const stack = [];
-    stack.push(rootNode);
-    while (stack.length !== 0) {
-      const fileNode = stack.pop();
+    for (const fileNode of rootNode.iterDfs()) {
       if (fileNode.isFile) {
         const reader = new zip.Uint8ArrayReader(fileNode.data);
         await zipWriter.add(fileNode.name, reader);
-      } else {
-        for (const child of fileNode.children.values()) {
-          stack.push(child);
-        }
       }
     }
+
     const zipFileBlob = await zipWriter.close();
 
     const a = document.createElement("a");
@@ -102,9 +96,9 @@
 </script>
 
 {#if rootNode !== null}
-  <div>
-    <div>
-      <button on:click={downloadZip}>Download Zip</button>
+  <div class="viewer-container">
+    <div class="viewer-bar">
+      <button on:click={downloadZip}>Export Zip</button>
     </div>
     {rootNode}
   </div>
@@ -156,5 +150,27 @@
     height: 100%;
     text-align: center;
     font-size: 1.5rem;
+  }
+
+  .viewer-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+  }
+
+  .viewer-bar {
+    background-color: var(--color-2);
+  }
+
+  .viewer-bar button {
+    color: white;
+    background-color: var(--color-2);
+    border: 0;
+    font-size: 1.1rem;
+    padding: 0.2rem;
+  }
+
+  .viewer-bar button:hover {
+    background-color: var(--color-3);
   }
 </style>
