@@ -107,7 +107,11 @@
   }
 
   function fileNodeIsImage(fileNode) {
-    return fileNode.path.endsWith(".png") || fileNode.path.endsWith(".jpg");
+    return (
+      fileNode.path.endsWith(".png") ||
+      fileNode.path.endsWith(".jpg") ||
+      fileNode.path.endsWith(".bmp")
+    );
   }
 
   function getFileNodeMimeType(fileNode) {
@@ -117,6 +121,10 @@
 
     if (fileNode.path.endsWith(".jpg")) {
       return "image/jpeg";
+    }
+
+    if (fileNode.path.endsWith(".bmp")) {
+      return "image/bmp";
     }
 
     return null;
