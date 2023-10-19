@@ -42,6 +42,10 @@ class FileNode {
     return this.#path.split(PATH_SEP).at(-1);
   }
 
+  depth() {
+    return this.#path.split(PATH_SEP).length - 1;
+  }
+
   addChild(fileNode) {
     if (!(fileNode instanceof FileNode)) {
       throw new Error("argument must be a FileNode");

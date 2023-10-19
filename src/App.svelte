@@ -105,9 +105,7 @@
     <div class="viewer-main-container">
       <div class="tree-view">
         Tree View
-        {#each rootNode.iterChildren() as fileNode}
-          <TreeViewNode {fileNode} />
-        {/each}
+        <TreeViewNode fileNode={rootNode} />
       </div>
       <div class="file-preview">{rootNode}</div>
     </div>
@@ -195,13 +193,16 @@
 
   .viewer-main-container .tree-view {
     background-color: var(--color-2);
-    flex-grow: 1;
+    display: flex;
+
+    flex-direction: column;
     padding: 0.2rem;
     overflow-y: auto;
+    width: 15vw;
   }
 
   .viewer-main-container .file-preview {
     background-color: var(--color-2);
-    flex-grow: 4;
+    flex-grow: 1;
   }
 </style>
