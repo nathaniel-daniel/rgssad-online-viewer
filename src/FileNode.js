@@ -39,7 +39,7 @@ class FileNode {
   }
 
   name() {
-    return this.#path.split(PATH_SEP, 1)[0];
+    return this.#path.split(PATH_SEP).at(-1);
   }
 
   addChild(fileNode) {
