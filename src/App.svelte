@@ -102,8 +102,10 @@
   }
 
   function handlePreviewImageLoad(event) {
-    event.target.width = event.target.naturalWidth;
-    event.target.height = event.target.naturalHeight;
+    const img = event.target;
+    img.width = img.naturalWidth;
+    img.height = img.naturalHeight;
+    img.style["aspect-ratio"] = `${img.naturalWidth} / ${img.naturalHeight}`;
   }
 
   function fileNodeIsImage(fileNode) {
@@ -268,10 +270,15 @@
   }
 
   .file-preview-header {
+    width: 100%;
   }
 
   .preview-image {
     margin: auto;
+    max-height: 90%;
+    max-width: 90%;
+    width: auto;
+    height: auto;
   }
 
   .unknown-file-type {
