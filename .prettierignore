@@ -6,3 +6,5 @@ dist
 src/fonts/**/*
 *.txt
 *.png
+LICENSE-APACHE
+LICENSE-MIT
