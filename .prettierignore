@@ -3,5 +3,5 @@
 vendored
 dist
 .gitattributes
-src/fonts
+src/fonts/**/*
 *.txt
