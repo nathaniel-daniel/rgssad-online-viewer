@@ -10,10 +10,14 @@
   function toggleOpen() {
     open = !open;
   }
+
+  function triggerSelectedFileNode() {
+    dispatch("selected-file-node", fileNode);
+  }
 </script>
 
 {#if fileNode.path === ""}
-  <ol style="padding: 0;">
+  <ol>
     {#each fileNode.iterChildren() as fileNode}
       <svelte:self {fileNode} />
     {/each}
@@ -21,11 +25,12 @@
 {:else}
   <li>
     {#if fileNode.isFile}
-      <button style="padding-left: {fileNode.depth()}rem;"
-        >{fileNode.name()}</button
+      <button
+        style="padding-left: {fileNode.depth()}rem;"
+        on:click={triggerSelectedFileNode}>{fileNode.name()}</button
       >
     {:else}
-      <button on:click={toggleOpen} style="padding-left: {fileNode.depth()}rem;"
+      <button style="padding-left: {fileNode.depth()}rem;" on:click={toggleOpen}
         >{#if open}-{:else}+{/if}
         {fileNode.name()}</button
       >

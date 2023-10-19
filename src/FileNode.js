@@ -55,6 +55,10 @@ class FileNode {
       throw new Error("cannot add child to file");
     }
 
+    if (fileNode.path === "") {
+      throw new Error("non-root FileNode must have a name");
+    }
+
     if (!fileNode.#path.startsWith(this.#path)) {
       throw new Error(
         `provided FileNode ("${fileNode.path}") is not a child of this FileNode ("${this.path}")`,
@@ -80,7 +84,7 @@ class FileNode {
       this.#children.set(name, fileNode);
     } else {
       const name = fileNode.#path.slice(
-        this.#path.length + 1,
+        this.#path.length === 0 ? 0 : this.#path.length + 1,
         nextPathSepIndex,
       );
 

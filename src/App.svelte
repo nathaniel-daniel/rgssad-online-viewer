@@ -105,7 +105,7 @@
     <div class="viewer-main-container">
       <div class="tree-view">
         Tree View
-        <TreeViewNode fileNode={rootNode} />
+        <TreeViewNode fileNode={rootNode} on:selected-file-node={console.log} />
       </div>
       <div class="file-preview">{rootNode}</div>
     </div>
