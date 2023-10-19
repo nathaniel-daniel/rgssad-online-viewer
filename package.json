@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build --base=./",
-    "fmt": "prettier **/* --write",
-    "check-fmt": "prettier **/* --check"
+    "fmt": "prettier \"**/*\" --write",
+    "check-fmt": "prettier \"**/*\" --check"
   },
   "author": "",
   "license": "ISC",
