@@ -9,8 +9,8 @@
     "fmt": "prettier \"**/*\" --write",
     "check-fmt": "prettier \"**/*\" --check"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "Nathaniel Daniel <nathaniel.daniel12@gmail.com>",
+  "license": "(MIT OR Apache-2.0)",
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.4.3",
     "@zip.js/zip.js": "^2.7.30",
