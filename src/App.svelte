@@ -100,7 +100,15 @@
     <div class="viewer-bar">
       <button on:click={downloadZip}>Export Zip</button>
     </div>
-    {rootNode}
+    <div class="viewer-main-container">
+        <div class="tree-view">
+            Tree View
+            {#each rootNode.iterChildren() as fileNode}
+                {fileNode}
+            {/each}
+        </div>
+        <div class="file-preview">{rootNode}</div>
+    </div>
   </div>
 {:else}
   <div class="archive-input-container">
@@ -160,6 +168,7 @@
 
   .viewer-bar {
     background-color: var(--color-2);
+    margin-bottom: 0.2rem;
   }
 
   .viewer-bar button {
@@ -172,5 +181,23 @@
 
   .viewer-bar button:hover {
     background-color: var(--color-3);
+  }
+  
+  .viewer-main-container {
+    display: flex;
+    flex-grow: 1;
+    flex-direction: row;
+    gap: 0.2rem;
+  }
+  
+  .viewer-main-container .tree-view {
+    background-color: var(--color-2);
+    flex-grow: 1;
+    padding: 0.2rem;
+  }
+  
+  .viewer-main-container .file-preview {
+    background-color: var(--color-2);
+    flex-grow: 4;
   }
 </style>

@@ -38,10 +38,6 @@ class FileNode {
     return this.#isFile;
   }
 
-  get children() {
-    return this.#children;
-  }
-
   addChild(fileNode) {
     if (!(fileNode instanceof FileNode)) {
       throw new Error("argument must be a FileNode");
@@ -69,30 +65,44 @@ class FileNode {
     if (nextPathSepIndex === -1) {
       const name = fileNode.#name.slice(this.#name.length + 1);
 
-      if (this.children.has(name)) {
+      if (this.#children.has(name)) {
         throw new Error(`duplicate FileNode ("${fileNode.name}")`);
       }
 
-      this.children.set(name, fileNode);
+      this.#children.set(name, fileNode);
     } else {
       const name = fileNode.#name.slice(
         this.#name.length + 1,
         nextPathSepIndex,
       );
 
-      if (!this.children.has(name)) {
+      if (!this.#children.has(name)) {
         const newFileNode = new FileNode({
           name: fileNode.#name.slice(0, nextPathSepIndex),
           isFile: false,
         });
-        this.children.set(name, newFileNode);
+        this.#children.set(name, newFileNode);
       }
 
-      this.children.get(name).addChild(fileNode);
+      this.#children.get(name).addChild(fileNode);
+    }
+  }
+
+  *iterChildren() {
+    if (this.isFile) {
+      throw new Error("cannot iter over the children of a file");
+    }
+
+    for (const child of this.#children.values()) {
+      yield child;
     }
   }
 
   *iterDfs() {
+    if (this.isFile) {
+      throw new Error("cannot iter over the descendants of a file");
+    }
+
     const stack = [];
     stack.push(this);
 
@@ -101,11 +111,15 @@ class FileNode {
       yield fileNode;
 
       if (!fileNode.isFile) {
-        for (const child of fileNode.children.values()) {
+        for (const child of fileNode.iterChildren()) {
           stack.push(child);
         }
       }
     }
+  }
+  
+  toString() {
+      return `FileNode(name=\"${this.#name}\")`;
   }
 }
 
