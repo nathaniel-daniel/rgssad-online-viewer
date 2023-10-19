@@ -19,7 +19,7 @@
 {#if fileNode.path === ""}
   <ol>
     {#each fileNode.iterChildren() as fileNode}
-      <svelte:self {fileNode} />
+      <svelte:self {fileNode} on:selected-file-node />
     {/each}
   </ol>
 {:else}
@@ -37,7 +37,7 @@
       <ol>
         {#if open}
           {#each fileNode.iterChildren() as fileNode}
-            <svelte:self {fileNode} />
+            <svelte:self {fileNode} on:selected-file-node />
           {/each}
         {/if}
       </ol>

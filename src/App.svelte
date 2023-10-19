@@ -8,6 +8,7 @@
 
   let rootNode = null;
   let fileName = null;
+  let activeFileNode = null;
 
   function handleArchiveInputDrop(event) {
     const items = event.dataTransfer.items;
@@ -95,6 +96,31 @@
     a.download = fileName + ".zip";
     a.click();
   }
+
+  function handleSelectedFileNode(event) {
+    activeFileNode = event.detail;
+  }
+
+  function handlePreviewImageLoad(event) {
+    event.target.width = event.target.naturalWidth;
+    event.target.height = event.target.naturalHeight;
+  }
+
+  function fileNodeIsImage(fileNode) {
+    return fileNode.path.endsWith(".png") || fileNode.path.endsWith(".jpg");
+  }
+
+  function getFileNodeMimeType(fileNode) {
+    if (fileNode.path.endsWith(".png")) {
+      return "image/png";
+    }
+
+    if (fileNode.path.endsWith(".jpg")) {
+      return "image/jpeg";
+    }
+
+    return null;
+  }
 </script>
 
 {#if rootNode !== null}
@@ -105,9 +131,34 @@
     <div class="viewer-main-container">
       <div class="tree-view">
         Tree View
-        <TreeViewNode fileNode={rootNode} on:selected-file-node={console.log} />
+        <TreeViewNode
+          fileNode={rootNode}
+          on:selected-file-node={handleSelectedFileNode}
+        />
       </div>
-      <div class="file-preview">{rootNode}</div>
+      <div class="file-preview">
+        <div class="file-preview-header">
+          {"Current: " + (activeFileNode ? activeFileNode.path : "None")}
+        </div>
+        {#if activeFileNode}
+          {#if fileNodeIsImage(activeFileNode)}
+            {@const imgSrc = URL.createObjectURL(
+              new Blob([activeFileNode.data], {
+                type: getFileNodeMimeType(activeFileNode),
+              }),
+            )}
+            <img
+              class="preview-image"
+              src={imgSrc}
+              on:load={handlePreviewImageLoad}
+            />
+          {:else}
+            <div class="unknown-file-type">
+              Unknown File Type: {activeFileNode.name()}
+            </div>
+          {/if}
+        {/if}
+      </div>
     </div>
   </div>
 {:else}
@@ -194,7 +245,6 @@
   .viewer-main-container .tree-view {
     background-color: var(--color-2);
     display: flex;
-
     flex-direction: column;
     padding: 0.2rem;
     overflow-y: auto;
@@ -203,6 +253,23 @@
 
   .viewer-main-container .file-preview {
     background-color: var(--color-2);
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding: 0.2rem;
+  }
+
+  .file-preview-header {
+  }
+
+  .preview-image {
+    margin: auto;
+  }
+
+  .unknown-file-type {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     flex-grow: 1;
   }
 </style>
