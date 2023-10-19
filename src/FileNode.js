@@ -1,3 +1,5 @@
+const PATH_SEP = "\\";
+
 class FileNode {
   constructor({ name, isFile, data = null }) {
     if (name === undefined || name === null) {
@@ -23,31 +25,46 @@ class FileNode {
     }
   }
 
-  addChild(path, fileNode) {
+  addChild(fileNode) {
     if (this.isFile) {
       throw new Error("cannot add child to file");
     }
 
-    const [name, ...pathTail] = path.split("\\");
+    if (!fileNode.name.startsWith(this.name)) {
+      throw new Error(
+        `provided FileNode ("${fileNode.name}") is not a child of this FileNode ("${this.name}")`,
+      );
+    }
 
-    if (pathTail.length === 0) {
-      fileNode.name = name;
+    if (this.name.length === fileNode.name.length) {
+      throw new Error(`duplicate FileNode ("${fileNode.name}")`);
+    }
+
+    const nextPathSepIndex = fileNode.name.indexOf(
+      PATH_SEP,
+      this.name.length + 1,
+    );
+
+    if (nextPathSepIndex === -1) {
+      const name = fileNode.name.slice(this.name.length + 1);
 
       if (this.children.has(name)) {
-        throw new Error("duplicate file node");
+        throw new Error(`duplicate FileNode ("${fileNode.name}")`);
       }
 
       this.children.set(name, fileNode);
     } else {
+      const name = fileNode.name.slice(this.name.length + 1, nextPathSepIndex);
+
       if (!this.children.has(name)) {
-        const fileNode = new FileNode({
-          name,
+        const newFileNode = new FileNode({
+          name: fileNode.name.slice(0, nextPathSepIndex),
           isFile: false,
         });
-        this.children.set(name, fileNode);
+        this.children.set(name, newFileNode);
       }
 
-      this.children.get(name).addChild(pathTail.join("\\"), fileNode);
+      this.children.get(name).addChild(fileNode);
     }
   }
 }

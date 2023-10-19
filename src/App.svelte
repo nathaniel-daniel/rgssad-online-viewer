@@ -56,15 +56,13 @@
       entry != null;
       entry = reader.readEntry()
     ) {
-      const fileName = entry.fileName;
-
       const fileNode = new FileNode({
-        name: "",
+        name: entry.fileName,
         isFile: true,
         data: entry.data,
       });
 
-      fileTree.addChild(fileName, fileNode);
+      fileTree.addChild(fileNode);
     }
 
     rootNode = fileTree;
@@ -82,20 +80,15 @@
     const zipWriter = new zip.ZipWriter(zipFileWriter);
 
     const stack = [];
-    stack.push(["", rootNode]);
+    stack.push(rootNode);
     while (stack.length !== 0) {
-      const [path, node] = stack.pop();
-      if (node.isFile) {
-        const reader = new zip.Uint8ArrayReader(node.data);
-        await zipWriter.add(path, reader);
+      const fileNode = stack.pop();
+      if (fileNode.isFile) {
+        const reader = new zip.Uint8ArrayReader(fileNode.data);
+        await zipWriter.add(fileNode.name, reader);
       } else {
-        for (const child of node.children.values()) {
-          let newPath = path;
-          if (newPath.length !== 0) {
-            newPath += "\\";
-          }
-          newPath += child.name;
-          stack.push([newPath, child]);
+        for (const child of fileNode.children.values()) {
+          stack.push(child);
         }
       }
     }
