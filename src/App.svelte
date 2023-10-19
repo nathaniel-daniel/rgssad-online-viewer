@@ -4,6 +4,8 @@
 
   import FileNode from "./FileNode.js";
 
+  import TreeViewNode from "./TreeViewNode.svelte";
+
   let rootNode = null;
   let fileName = null;
 
@@ -48,7 +50,7 @@
     const reader = new rgssad.Reader(arrayBuffer);
 
     const fileTree = new FileNode({
-      name: "",
+      path: "",
       isFile: false,
     });
     for (
@@ -57,7 +59,7 @@
       entry = reader.readEntry()
     ) {
       const fileNode = new FileNode({
-        name: entry.fileName,
+        path: entry.fileName,
         isFile: true,
         data: entry.data,
       });
@@ -82,7 +84,7 @@
     for (const fileNode of rootNode.iterDfs()) {
       if (fileNode.isFile) {
         const reader = new zip.Uint8ArrayReader(fileNode.data);
-        await zipWriter.add(fileNode.name, reader);
+        await zipWriter.add(fileNode.path, reader);
       }
     }
 
@@ -101,13 +103,13 @@
       <button on:click={downloadZip}>Export Zip</button>
     </div>
     <div class="viewer-main-container">
-        <div class="tree-view">
-            Tree View
-            {#each rootNode.iterChildren() as fileNode}
-                {fileNode}
-            {/each}
-        </div>
-        <div class="file-preview">{rootNode}</div>
+      <div class="tree-view">
+        Tree View
+        {#each rootNode.iterChildren() as fileNode}
+          <div>+ {fileNode.name()}</div>
+        {/each}
+      </div>
+      <div class="file-preview">{rootNode}</div>
     </div>
   </div>
 {:else}
@@ -182,20 +184,20 @@
   .viewer-bar button:hover {
     background-color: var(--color-3);
   }
-  
+
   .viewer-main-container {
     display: flex;
     flex-grow: 1;
     flex-direction: row;
     gap: 0.2rem;
   }
-  
+
   .viewer-main-container .tree-view {
     background-color: var(--color-2);
     flex-grow: 1;
     padding: 0.2rem;
   }
-  
+
   .viewer-main-container .file-preview {
     background-color: var(--color-2);
     flex-grow: 4;

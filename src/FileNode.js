@@ -1,20 +1,20 @@
 const PATH_SEP = "\\";
 
 class FileNode {
-  #name;
+  #path;
   #isFile;
   #children;
 
-  constructor({ name, isFile, data = null }) {
-    if (name === undefined || name === null) {
-      throw new Error("Missing `name` argument");
+  constructor({ path, isFile, data = null }) {
+    if (path === undefined || path === null) {
+      throw new Error("Missing `path` argument");
     }
 
     if (isFile === undefined || isFile === null) {
       throw new Error("Missing `isFile` argument");
     }
 
-    this.#name = name;
+    this.#path = path;
     this.#isFile = isFile;
     this.#children = null;
     this.data = null;
@@ -30,12 +30,16 @@ class FileNode {
     }
   }
 
-  get name() {
-    return this.#name;
+  get path() {
+    return this.#path;
   }
 
   get isFile() {
     return this.#isFile;
+  }
+
+  name() {
+    return this.#path.split(PATH_SEP, 1)[0];
   }
 
   addChild(fileNode) {
@@ -47,38 +51,38 @@ class FileNode {
       throw new Error("cannot add child to file");
     }
 
-    if (!fileNode.#name.startsWith(this.#name)) {
+    if (!fileNode.#path.startsWith(this.#path)) {
       throw new Error(
-        `provided FileNode ("${fileNode.name}") is not a child of this FileNode ("${this.name}")`,
+        `provided FileNode ("${fileNode.path}") is not a child of this FileNode ("${this.path}")`,
       );
     }
 
-    if (this.#name.length === fileNode.#name.length) {
-      throw new Error(`duplicate FileNode ("${fileNode.name}")`);
+    if (this.#path.length === fileNode.#path.length) {
+      throw new Error(`duplicate FileNode ("${fileNode.path}")`);
     }
 
-    const nextPathSepIndex = fileNode.#name.indexOf(
+    const nextPathSepIndex = fileNode.#path.indexOf(
       PATH_SEP,
-      this.#name.length + 1,
+      this.#path.length + 1,
     );
 
     if (nextPathSepIndex === -1) {
-      const name = fileNode.#name.slice(this.#name.length + 1);
+      const name = fileNode.#path.slice(this.#path.length + 1);
 
       if (this.#children.has(name)) {
-        throw new Error(`duplicate FileNode ("${fileNode.name}")`);
+        throw new Error(`duplicate FileNode ("${fileNode.path}")`);
       }
 
       this.#children.set(name, fileNode);
     } else {
-      const name = fileNode.#name.slice(
-        this.#name.length + 1,
+      const name = fileNode.#path.slice(
+        this.#path.length + 1,
         nextPathSepIndex,
       );
 
       if (!this.#children.has(name)) {
         const newFileNode = new FileNode({
-          name: fileNode.#name.slice(0, nextPathSepIndex),
+          path: fileNode.#path.slice(0, nextPathSepIndex),
           isFile: false,
         });
         this.#children.set(name, newFileNode);
@@ -117,9 +121,9 @@ class FileNode {
       }
     }
   }
-  
+
   toString() {
-      return `FileNode(name=\"${this.#name}\")`;
+    return `FileNode(path=\"${this.#path}\")`;
   }
 }
 
