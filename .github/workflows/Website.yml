@@ -28,9 +28,9 @@ jobs:
 
       - name: Build
         run: npm run build
-        
+
       - name: Add Bing Site Verification
-        run: echo "$BING_SITE_AUTH_XML" > ./dist/BingSiteAuth.xml
+        run: echo "${{ env.BING_SITE_AUTH_XML }}" > ./dist/BingSiteAuth.xml
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
