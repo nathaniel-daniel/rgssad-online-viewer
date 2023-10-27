@@ -72,6 +72,7 @@
 </script>
 
 <div class="container">
+  <h1>RGSSAD Online Viewer</h1>
   <label
     for="archive-input"
     class="input-label"
@@ -95,6 +96,7 @@
     border-radius: 0.5rem;
     display: flex;
     flex-grow: 1;
+    flex-direction: column;
     justify-content: center;
     margin: 0.5rem;
     padding: 0.5rem;
