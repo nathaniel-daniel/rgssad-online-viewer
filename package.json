@@ -17,7 +17,7 @@
     "prettier": "^3.2.5",
     "prettier-plugin-svelte": "^3.2.2",
     "rgssad-wasm": "./vendored/rgssad-wasm",
-    "svelte": "^4.2.10",
+    "svelte": "^4.2.12",
     "vite": "^4.5.0",
     "vite-plugin-top-level-await": "^1.4.1",
     "vite-plugin-wasm": "^3.3.0"
