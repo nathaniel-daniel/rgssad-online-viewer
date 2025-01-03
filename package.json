@@ -13,7 +13,7 @@
   "license": "(MIT OR Apache-2.0)",
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.5.3",
-    "@zip.js/zip.js": "^2.7.53",
+    "@zip.js/zip.js": "^2.7.54",
     "prettier": "^3.3.3",
     "prettier-plugin-svelte": "^3.2.7",
     "rgssad-wasm": "./vendored/rgssad-wasm",
