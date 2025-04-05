@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>RGSSAD Online Viewer</title>
+    <meta
+      name="description"
+      content="This is an online RPGMaker XP and VX archive viewer. You can use it to view RPGMaker XP (rgssad) RPGMaker VX (rgss2a) archive files."
+    />
+    <meta name="keywords" content="rgssad,rgss2a,online,viewer" />
+    <link rel="author" href="https://github.com/nathaniel-daniel" />
+    <meta name="robots" content="max-snippet:-1" />
+    <style>
+      /* https://www.color-hex.com/color-palette/1718 */
+      :root {
+        --color-1: #000000;
+        --color-2: #303030;
+        --color-3: #383838;
+        --color-4: #777777;
+        --color-5: #ff0000;
+      }
+
+      @font-face {
+        font-family: Roboto;
+        src: url("./assets/Roboto-Regular-4e147ab6.ttf");
+      }
+
+      html {
+        background-color: var(--color-1);
+        color: white;
+        font-family: Roboto;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        display: flex;
+        width: 100%;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+
+      #app {
+        flex-grow: 1;
+        display: flex;
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+    <script type="module" crossorigin src="./assets/index-1ecaf215.js"></script>
+    <link rel="stylesheet" href="./assets/index-21944583.css">
+  </head>
+  <body>
+    <div id="app"></div>
+    
+  </body>
+</html>
